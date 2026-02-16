@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>我的遊戲收藏庫</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f0f2f5;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px;
+        }
+        h1 {
+            color: #333;
+            margin-bottom: 30px;
+        }
+        .container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            width: 100%;
+            max-width: 800px;
+        }
+        .game-card {
+            background: white;
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            text-align: center;
+            transition: transform 0.2s, box-shadow 0.2s;
+            text-decoration: none;
+            color: #1a73e8;
+            font-weight: bold;
+            font-size: 1.2rem;
+        }
+        .game-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 6px 12px rgba(0,0,0,0.15);
+            background-color: #e8f0fe;
+        }
+        .footer {
+            margin-top: 40px;
+            color: #888;
+            font-size: 0.9rem;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>🎮 我的遊戲收藏庫</h1>
+
+    <div class="container">
+        <a href="https://ryan930105.github.io/-1/" class="game-card" target="_blank">💥 對戰射擊遊戲</a>
+        <a href="https://ryan930105.github.io/-260214/" class="game-card" target="_blank">🐾 寶可夢培養遊戲</a>
+        <a href="https://ryan930105.github.io/-260215/" class="game-card" target="_blank">🃏 翻翻樂</a>
+        <a href="https://ryan930105.github.io/--260216/" class="game-card" target="_blank">🎰 拉霸機</a>
+        <a href="https://ryan930105.github.io/-260217/" class="game-card" target="_blank">🐠 水族箱</a>
+    </div>
+
+    <div class="footer">
+        點擊上方卡片即可開始遊戲
+    </div>
+
+</body>
+</html>
