@@ -18,6 +18,7 @@
             font-family: 'PingFang TC', 'Microsoft JhengHei', sans-serif;
             background: linear-gradient(135deg, #0f0c29 0%, #302b63 50%, #24243e 100%);
             color: white; scroll-behavior: smooth;
+            overflow-x: hidden;
         }
 
         /* 背景微粒效果 */
@@ -27,19 +28,22 @@
             opacity: 0.3; pointer-events: none; z-index: 0;
         }
 
-        /* 啟動封面 */
+        /* --- 啟動封面 --- */
         #start-screen {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             background: #000; display: flex; flex-direction: column; 
             justify-content: center; align-items: center; z-index: 9999;
+            transition: opacity 0.6s ease, visibility 0.6s;
         }
         #start-btn {
             padding: 18px 50px; font-size: 1.5rem; background: var(--primary);
             color: white; border: none; border-radius: 50px; cursor: pointer;
             box-shadow: 0 0 30px rgba(108, 92, 231, 0.5); transition: 0.3s;
+            letter-spacing: 2px;
         }
+        #start-btn:hover { transform: scale(1.1); box-shadow: 0 0 50px var(--primary); }
 
-        /* 主佈局 */
+        /* --- 主佈局 --- */
         .main-content {
             display: none; position: relative; z-index: 1;
             padding: 40px 20px; max-width: 1200px; margin: 0 auto;
@@ -56,13 +60,14 @@
         }
         #checkin-btn {
             background: var(--accent); color: white; border: none;
-            padding: 8px 20px; border-radius: 20px; cursor: pointer;
+            padding: 8px 20px; border-radius: 20px; cursor: pointer; font-weight: bold;
         }
+        #checkin-btn:disabled { background: #b2bec3; cursor: not-allowed; }
 
-        /* 分類標籤 */
+        /* 分類標題 */
         .category-header {
-            display: flex; align-items: center; margin: 40px 0 20px;
-            font-size: 1.5rem; font-weight: bold; color: #a29bfe;
+            display: flex; align-items: center; margin: 50px 0 25px;
+            font-size: 1.6rem; font-weight: bold; color: #a29bfe;
         }
         .category-header::after {
             content: ""; flex: 1; height: 1px; background: rgba(162, 155, 254, 0.3); margin-left: 20px;
@@ -70,34 +75,48 @@
 
         /* 網格系統 */
         .game-grid {
-            display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px;
+            display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 20px;
         }
 
         .game-card {
-            background: var(--glass); border-radius: 15px; padding: 20px;
+            background: var(--glass); border-radius: 20px; padding: 25px;
             text-decoration: none; color: #2d3436; text-align: center;
-            transition: 0.3s; border-bottom: 4px solid #dfe6e9;
-            position: relative; overflow: hidden;
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            border-bottom: 5px solid #dfe6e9; position: relative; overflow: hidden;
+            display: flex; flex-direction: column; align-items: center;
         }
-        .game-card:hover { transform: translateY(-8px); background: #fff; }
+        .game-card:hover { transform: translateY(-10px); background: #fff; box-shadow: 0 15px 30px rgba(0,0,0,0.4); }
         
-        /* 不同分類的顏色細節 */
+        /* 分類 Hover 顏色 */
         .cat-action:hover { border-bottom-color: #ff7675; }
         .cat-casual:hover { border-bottom-color: var(--casual); }
         .cat-card:hover { border-bottom-color: var(--primary); }
         .cat-tool:hover { border-bottom-color: var(--tool); }
 
-        .icon { font-size: 3rem; margin-bottom: 10px; }
-        .game-title { font-size: 1rem; font-weight: bold; }
+        .icon { font-size: 3.5rem; margin-bottom: 15px; }
+        .game-title { font-size: 1.15rem; font-weight: bold; }
+
         .tag {
-            position: absolute; top: 5px; right: -15px; background: #ff7675;
-            color: white; font-size: 0.6rem; padding: 2px 15px; transform: rotate(45deg);
+            position: absolute; top: 8px; right: -20px; background: #ff7675;
+            color: white; font-size: 0.7rem; padding: 2px 25px; transform: rotate(45deg);
+            font-weight: bold;
         }
 
+        /* 密碼鎖定區域樣式 */
+        .locked-area {
+            background: rgba(0, 0, 0, 0.4); border: 2px dashed var(--tool);
+            border-radius: 20px; padding: 50px; cursor: pointer; text-align: center;
+            transition: 0.3s;
+        }
+        .locked-area:hover { background: rgba(0, 206, 203, 0.1); transform: scale(1.02); }
+
+        /* 音樂控制 */
         .music-btn {
-            position: fixed; bottom: 25px; right: 25px; width: 45px; height: 45px;
-            background: rgba(0,0,0,0.5); border-radius: 50%; display: flex;
-            align-items: center; justify-content: center; cursor: pointer; z-index: 100;
+            position: fixed; bottom: 25px; right: 25px; width: 50px; height: 50px;
+            background: rgba(0,0,0,0.6); backdrop-filter: blur(5px); border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            cursor: pointer; font-size: 1.5rem; color: white; z-index: 1000;
+            border: 1px solid rgba(255,255,255,0.2);
         }
     </style>
 </head>
@@ -106,9 +125,9 @@
     <audio id="bgm" loop><source src="bga1.mp3" type="audio/mpeg"></audio>
 
     <div id="start-screen">
-        <div style="font-size: 4rem;">🎮</div>
-        <h1>RYAN ARCADE</h1>
-        <button id="start-btn" onclick="initArcade()">ENTER HUB</button>
+        <div style="font-size: 5rem; margin-bottom: 20px; filter: drop-shadow(0 0 20px var(--primary));">🎮</div>
+        <h1 style="letter-spacing: 8px; margin-bottom: 40px;">RYAN ARCADE</h1>
+        <button id="start-btn" onclick="initArcade()">PRESS TO START</button>
     </div>
 
     <div class="music-btn" onclick="toggleMusic()" id="m-icon">🎵</div>
@@ -117,7 +136,7 @@
         <div class="header-section">
             <h1>Ryan's Game Hub</h1>
             <div class="checkin-panel">
-                <span id="checkin-msg">🔥 累計登入：<span id="streak-val">0</span> 天</span>
+                <span id="checkin-msg" style="font-weight: bold;">🔥 累計登入：<span id="streak-val">0</span> 天</span>
                 <button id="checkin-btn" onclick="doCheckIn()">每日簽到</button>
             </div>
         </div>
@@ -128,10 +147,10 @@
                 <div class="tag">HOT</div><div class="icon">🥊</div><div class="game-title">拳皇</div>
             </a>
             <a href="https://ryan930105.github.io/CombatShooting-260208/" class="game-card cat-action" target="_blank">
-                <div class="icon">💥</div><div class="game-title">對戰射擊</div>
+                <div class="icon">💥</div><div class="game-title">對戰射擊遊戲</div>
             </a>
             <a href="https://ryan930105.github.io/shooting/" class="game-card cat-action" target="_blank">
-                <div class="icon">🎯</div><div class="game-title">槍法練習器</div>
+                <div class="icon">🎯</div><div class="game-title">職業槍法練習器</div>
             </a>
             <a href="https://ryan930105.github.io/Towerdefense-260304/" class="game-card cat-action" target="_blank">
                 <div class="icon">🏰</div><div class="game-title">戰略塔防</div>
@@ -144,13 +163,13 @@
                 <div class="icon">🐾</div><div class="game-title">寶可夢培養</div>
             </a>
             <a href="https://ryan930105.github.io/ClawMachine-260222/" class="game-card cat-casual" target="_blank">
-                <div class="icon">🧸</div><div class="game-title">夾娃娃機</div>
+                <div class="icon">🧸</div><div class="game-title">夾娃娃遊戲</div>
             </a>
             <a href="https://ryan930105.github.io/aquarium-260217/" class="game-card cat-casual" target="_blank">
-                <div class="icon">🐠</div><div class="game-title">虛擬水族箱</div>
+                <div class="icon">🐠</div><div class="game-title">水族箱</div>
             </a>
             <a href="https://ryan930105.github.io/PokeFun-260223/" class="game-card cat-casual" target="_blank">
-                <div class="icon">🎁</div><div class="game-title">驚喜戳戳樂</div>
+                <div class="icon">🎁</div><div class="game-title">戳戳樂</div>
             </a>
             <a href="https://ryan930105.github.io/marbles-260222/" class="game-card cat-casual" target="_blank">
                 <div class="icon">🔮</div><div class="game-title">反彈彈珠</div>
@@ -163,57 +182,77 @@
             </a>
         </div>
 
-        <div class="category-header">🃏 博弈牌類 Board & Card</div>
+        <div class="category-header">🃏 博弈牌類 Cards</div>
         <div class="game-grid">
             <a href="https://ryan930105.github.io/BigTwo/" class="game-card cat-card" target="_blank">
                 <div class="icon">🃏</div><div class="game-title">大老二</div>
             </a>
             <a href="https://ryan930105.github.io/Mahjong/" class="game-card cat-card" target="_blank">
-                <div class="icon">🀄</div><div class="game-title">經典麻將</div>
+                <div class="icon">🀄</div><div class="game-title">麻將</div>
             </a>
             <a href="https://ryan930105.github.io/Slotmachine-260216/" class="game-card cat-card" target="_blank">
-                <div class="icon">🎰</div><div class="game-title">豪華拉霸機</div>
+                <div class="icon">🎰</div><div class="game-title">拉霸機</div>
             </a>
             <a href="https://ryan930105.github.io/FlipFun-260215/" class="game-card cat-card" target="_blank">
-                <div class="icon">🃏</div><div class="game-title">記憶翻翻樂</div>
+                <div class="icon">🃏</div><div class="game-title">翻翻樂</div>
             </a>
         </div>
 
         <div class="category-header">⚙️ 系統工具 Tools</div>
-        <div class="game-grid">
+        <div id="tool-lock" class="locked-area" onclick="unlockTools()">
+            <div style="font-size: 3.5rem;">🔒</div>
+            <h3 style="color: var(--tool); margin: 10px 0;">受保護的區域</h3>
+            <p style="opacity: 0.7;">請點擊並輸入密碼以解鎖管理系統</p>
+        </div>
+        <div id="tool-content" class="game-grid" style="display: none;">
             <a href="https://ryan930105.github.io/MyRentalSystem/" class="game-card cat-tool" target="_blank">
-                <div class="icon">🏠</div><div class="game-title">租賃管理系統</div>
+                <div class="tag" style="background:var(--tool)">PRIVATE</div>
+                <div class="icon">🏠</div>
+                <div class="game-title">租賃管理系統</div>
             </a>
         </div>
 
-        <footer style="margin-top: 80px; text-align: center; opacity: 0.5; font-size: 0.8rem; padding-bottom: 40px;">
-            &copy; 2026 Ryan Arcade Portal
+        <footer style="margin-top: 100px; text-align: center; opacity: 0.4; font-size: 0.8rem; padding-bottom: 50px;">
+            &copy; 2026 Ryan Arcade Portal. All Rights Reserved.
         </footer>
     </div>
 
     <script>
         const audio = document.getElementById('bgm');
+        const pass = "690813";
+
+        // 啟動頁面邏輯
         function initArcade() {
             document.getElementById('start-screen').style.opacity = '0';
             setTimeout(() => {
                 document.getElementById('start-screen').style.visibility = 'hidden';
                 document.getElementById('main-ui').style.display = 'block';
-                audio.play().catch(e => console.log("Audio Playback Blocked"));
-            }, 500);
+                audio.play().catch(e => console.log("Audio play blocked by browser"));
+            }, 600);
             refreshCheckInUI();
         }
+
+        // 音樂控制
         function toggleMusic() {
-            if (audio.paused) { audio.play(); document.getElementById('m-icon').innerText = '🎵'; }
-            else { audio.pause(); document.getElementById('m-icon').innerText = '🔇'; }
+            if (audio.paused) {
+                audio.play();
+                document.getElementById('m-icon').innerText = '🎵';
+            } else {
+                audio.pause();
+                document.getElementById('m-icon').innerText = '🔇';
+            }
         }
+
+        // 簽到功能
         function doCheckIn() {
             const today = new Date().toDateString();
             localStorage.setItem('lastDate', today);
             let count = parseInt(localStorage.getItem('streakCount') || '0');
             localStorage.setItem('streakCount', ++count);
-            alert("簽到成功！");
+            alert("簽到成功！祝你今天遊戲連勝！");
             refreshCheckInUI();
         }
+
         function refreshCheckInUI() {
             const lastDate = localStorage.getItem('lastDate');
             const today = new Date().toDateString();
@@ -221,7 +260,19 @@
             document.getElementById('streak-val').innerText = count;
             if (lastDate === today) {
                 document.getElementById('checkin-btn').disabled = true;
-                document.getElementById('checkin-btn').innerText = '今日已簽到';
+                document.getElementById('checkin-btn').innerText = '今日已領取';
+            }
+        }
+
+        // 密碼解鎖功能
+        function unlockTools() {
+            const userInput = prompt("請輸入管理員密碼：");
+            if (userInput === pass) {
+                document.getElementById('tool-lock').style.display = 'none';
+                document.getElementById('tool-content').style.display = 'grid';
+                alert("解鎖成功，歡迎回來管理員。");
+            } else if (userInput !== null) {
+                alert("密碼錯誤！請重新確認。");
             }
         }
     </script>
